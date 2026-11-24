@@ -1,0 +1,28 @@
+{
+  "name": "google-journey-motion-graphic",
+  "version": "1.0.0",
+  "description": "75-second vertical 3D motion graphic explaining what happens when you open google.com, built with Remotion and Three.js.",
+  "private": true,
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion bundle",
+    "render": "remotion render GoogleJourney out/google-journey.mp4",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-three/fiber": "^8.17.10",
+    "@remotion/cli": "^4.0.0",
+    "@remotion/google-fonts": "^4.0.0",
+    "@remotion/three": "^4.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.0",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.170.0",
+    "typescript": "^5.6.3"
+  }
+}
