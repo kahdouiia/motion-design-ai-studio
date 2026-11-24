@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Remotion build & rendered outputs
+out/
+.remotion/
+dist/
+build/
+
+# Logs & OS files
+*.log
+npm-debug.log*
+.DS_Store
+
+# Environment & scratch
+.env
+.env.*
+.scratch/
