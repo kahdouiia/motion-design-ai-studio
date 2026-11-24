@@ -1,6 +1,12 @@
 import React from 'react';
 import {Composition} from 'remotion';
 import {GoogleJourney} from './GoogleJourney';
+import {
+  COMPOSITION_HEIGHT,
+  COMPOSITION_WIDTH,
+  FPS,
+  TOTAL_FRAMES,
+} from './timeline/choreography';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -8,10 +14,10 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="GoogleJourney"
         component={GoogleJourney}
-        durationInFrames={2250}
-        fps={30}
-        width={1080}
-        height={1920}
+        durationInFrames={TOTAL_FRAMES}
+        fps={FPS}
+        width={COMPOSITION_WIDTH}
+        height={COMPOSITION_HEIGHT}
       />
     </>
   );
