@@ -1,5 +1,6 @@
 import React, {useMemo} from 'react';
 import {AbsoluteFill, useCurrentFrame} from 'remotion';
+import {NarrationTrack} from './audio/NarrationTrack';
 import {PersianHud} from './hud/PersianHud';
 import {getChoreographyState} from './timeline/choreography';
 import {ContinuousWorld} from './world/ContinuousWorld';
@@ -15,6 +16,7 @@ export const GoogleJourney: React.FC = () => {
         background: `linear-gradient(180deg, ${STUDIO_COLORS.bgTop} 0%, ${STUDIO_COLORS.bgBottom} 100%)`,
       }}
     >
+      <NarrationTrack />
       <ContinuousWorld choreography={choreography} />
       <PersianHud choreography={choreography} />
     </AbsoluteFill>

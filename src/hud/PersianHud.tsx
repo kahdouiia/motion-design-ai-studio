@@ -8,12 +8,14 @@ import {getStation2State} from '../timeline/station2';
 import {getStation3State} from '../timeline/station3';
 import {getStation4State} from '../timeline/station4';
 import {getStation5State} from '../timeline/station5';
+import {getStation6State} from '../timeline/station6';
 import {SHORTS_SAFE_ZONE, STUDIO_COLORS} from '../world/palette';
 import {Station1CacheCard} from './Station1CacheCard';
 import {Station2DnsCard} from './Station2DnsCard';
 import {Station3TcpTlsCard} from './Station3TcpTlsCard';
 import {Station4LayersCard} from './Station4LayersCard';
 import {Station5ServerCard} from './Station5ServerCard';
+import {Station6RenderCard} from './Station6RenderCard';
 
 const {fontFamily: persianFont} = loadVazirmatn('normal', {
   weights: ['400', '500', '700'],
@@ -43,12 +45,14 @@ export const PersianHud: React.FC<PersianHudProps> = ({choreography}) => {
   const station3 = useMemo(() => getStation3State(frame), [frame]);
   const station4 = useMemo(() => getStation4State(frame), [frame]);
   const station5 = useMemo(() => getStation5State(frame), [frame]);
+  const station6 = useMemo(() => getStation6State(frame), [frame]);
   const isRichStationCard =
     stationIndex === 1 ||
     stationIndex === 2 ||
     stationIndex === 3 ||
     stationIndex === 4 ||
-    stationIndex === 5;
+    stationIndex === 5 ||
+    stationIndex === 6;
 
   const cardEntranceOpacity =
     stationIndex === 1
@@ -334,6 +338,33 @@ export const PersianHud: React.FC<PersianHudProps> = ({choreography}) => {
               {station5.isResponseLaunched ? '200 OK' : 'HTTP/2'}
             </span>
           )}
+
+          {stationIndex === 6 && (
+            <span
+              dir="ltr"
+              style={{
+                fontFamily: monoFont,
+                fontSize: 18,
+                fontWeight: 700,
+                color: station6.renderComplete
+                  ? STUDIO_COLORS.responseEmerald
+                  : STUDIO_COLORS.electricBlue,
+                background: station6.renderComplete
+                  ? STUDIO_COLORS.responseEmeraldSoft
+                  : STUDIO_COLORS.electricBlueSoft,
+                border: `1px solid ${
+                  station6.renderComplete
+                    ? 'rgba(16, 185, 129, 0.32)'
+                    : 'rgba(26, 91, 255, 0.24)'
+                }`,
+                borderRadius: 11,
+                padding: '5px 12px',
+                flexShrink: 0,
+              }}
+            >
+              {station6.renderComplete ? 'GOOGLE READY' : 'DOM / PAINT'}
+            </span>
+          )}
         </div>
 
         <p
@@ -358,6 +389,8 @@ export const PersianHud: React.FC<PersianHudProps> = ({choreography}) => {
           <Station4LayersCard station4={station4} monoFont={monoFont} />
         ) : stationIndex === 5 ? (
           <Station5ServerCard station5={station5} monoFont={monoFont} />
+        ) : stationIndex === 6 ? (
+          <Station6RenderCard station6={station6} monoFont={monoFont} />
         ) : (
           /* Technical monospace tokens rendered LTR inside the RTL card */
           <div

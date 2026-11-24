@@ -152,7 +152,7 @@ const CAMERA_KEYFRAMES: readonly CameraKeyframe[] = [
   {frame: 1980, position: [-0.6, 3.0, 13.0], lookAt: [0.0, 3.2, 0.0], fov: 44},
   {frame: 2060, position: [1.3, 12.2, 10.8], lookAt: [0.0, 11.8, 0.0], fov: 42},
   {frame: 2110, position: [1.1, 12.0, 11.2], lookAt: [0.0, 11.6, 0.0], fov: 42},
-  {frame: 2250, position: [0.0, -5.0, 60.0], lookAt: [0.0, -5.0, 0.0], fov: 46},
+  {frame: 2250, position: [0.0, -6.5, 66.0], lookAt: [0.0, -6.5, 0.0], fov: 52},
 ];
 
 interface PacketKeyframe {

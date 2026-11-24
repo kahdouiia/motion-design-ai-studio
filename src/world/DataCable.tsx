@@ -14,6 +14,7 @@ import {
   SERVER_TOP_PORT_POSITION,
   getStation5State,
 } from '../timeline/station5';
+import {getStation6State} from '../timeline/station6';
 import {STUDIO_COLORS} from './palette';
 
 interface StationAnchorNode {
@@ -70,6 +71,10 @@ export const DataCable: React.FC<DataCableProps> = ({choreography}) => {
   );
   const station5 = useMemo(
     () => getStation5State(choreography.frame),
+    [choreography.frame],
+  );
+  const station6 = useMemo(
+    () => getStation6State(choreography.frame),
     [choreography.frame],
   );
 
@@ -129,22 +134,33 @@ export const DataCable: React.FC<DataCableProps> = ({choreography}) => {
         const [x, y, z] = node.position;
 
         if (isSmartphoneNode) {
+          const isEmeraldArrival = station6.packetArrived;
           const portScale =
             1.0 +
             0.16 * station1.tapImpactGlow +
-            0.28 * station1.packetLaunchCharge;
+            0.28 * station1.packetLaunchCharge +
+            0.34 * station6.arrivalGlow;
           return (
             <group key={idx} position={[x, y, z]} scale={portScale}>
-              {/* Smooth rounded electric-blue junction hub cleanly enclosing the Data Cable start */}
+              {/* Smooth rounded junction hub cleanly enclosing the Data Cable start */}
               <mesh>
                 <sphereGeometry args={[0.118, 24, 24]} />
                 <meshStandardMaterial
-                  color={STUDIO_COLORS.electricBlue}
-                  emissive={STUDIO_COLORS.electricBlueGlow}
+                  color={
+                    isEmeraldArrival
+                      ? STUDIO_COLORS.responseEmerald
+                      : STUDIO_COLORS.electricBlue
+                  }
+                  emissive={
+                    isEmeraldArrival
+                      ? STUDIO_COLORS.responseEmeraldGlow
+                      : STUDIO_COLORS.electricBlueGlow
+                  }
                   emissiveIntensity={
                     0.5 +
                     0.5 * station1.tapImpactGlow +
-                    0.75 * station1.packetLaunchCharge
+                    0.75 * station1.packetLaunchCharge +
+                    0.95 * station6.arrivalGlow
                   }
                   roughness={0.25}
                   metalness={0.06}

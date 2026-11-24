@@ -7,14 +7,18 @@
     "dev": "remotion studio",
     "build": "remotion bundle",
     "render": "remotion render GoogleJourney out/google-journey.mp4",
+    "generate-narration": "npx --yes tsx scripts/generate-narration.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@google/genai": "^3.6.1",
     "@react-three/fiber": "^8.17.10",
     "@remotion/cli": "^4.0.0",
     "@remotion/google-fonts": "^4.0.0",
+    "@remotion/media": "4.0.547",
     "@remotion/three": "^4.0.0",
+    "msedge-tts": "^2.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "remotion": "^4.0.0",

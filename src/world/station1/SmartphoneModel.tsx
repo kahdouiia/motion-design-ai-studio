@@ -6,6 +6,7 @@ import {
   SMARTPHONE_TAP_LOCAL_OFFSET,
   type Station1State,
 } from '../../timeline/station1';
+import type {Station6State} from '../../timeline/station6';
 import {STUDIO_COLORS} from '../palette';
 import {
   createContactShadowTexture,
@@ -76,9 +77,13 @@ function createChainLinkLoopGeometry(): THREE.ExtrudeGeometry {
 
 interface SmartphoneModelProps {
   readonly station1: Station1State;
+  readonly station6?: Station6State;
 }
 
-export const SmartphoneModel: React.FC<SmartphoneModelProps> = ({station1}) => {
+export const SmartphoneModel: React.FC<SmartphoneModelProps> = ({
+  station1,
+  station6,
+}) => {
   const gl = useThree((state) => state.gl);
 
   const geometries = useMemo(() => {
@@ -199,13 +204,14 @@ export const SmartphoneModel: React.FC<SmartphoneModelProps> = ({station1}) => {
 
   const shadowTexture = useMemo(() => createContactShadowTexture(), []);
 
-  // Re-render procedural screen texture deterministically whenever typing or glow state changes
+  // Re-render procedural screen texture deterministically whenever typing, glow, or Station 6 render state changes
   useMemo(() => {
     renderSmartphoneScreenCanvas(screenAssets.canvas, {
       typedText: station1.typedText,
       cursorVisible: station1.cursorVisible,
       searchBarHighlight: station1.searchBarHighlight,
       tapImpactGlow: station1.tapImpactGlow,
+      station6,
     });
     screenAssets.texture.needsUpdate = true;
   }, [
@@ -214,6 +220,7 @@ export const SmartphoneModel: React.FC<SmartphoneModelProps> = ({station1}) => {
     station1.cursorVisible,
     station1.searchBarHighlight,
     station1.tapImpactGlow,
+    station6,
   ]);
 
   useEffect(() => {
@@ -371,80 +378,89 @@ export const SmartphoneModel: React.FC<SmartphoneModelProps> = ({station1}) => {
         ))}
       </group>
 
-      {/* 8. 3D Electric-Blue Interlocking Chain-Link Icon (matching reference.png) */}
-      <group
-        position={[-0.48, tapY + 0.06, 0.246]}
-        rotation={[0, 0, Math.PI * 0.25]}
-        name="phone-link-icon"
-      >
-        <mesh
-          geometry={geometries.linkLoopGeo}
-          position={[-0.125, 0, 0]}
-          castShadow
+      {/* 8. 3D Electric-Blue Interlocking Chain-Link Icon (dismissed cleanly in Station 6 as Google renders) */}
+      {(station6 ? station6.linkUiScale : 1) > 0.01 && (
+        <group
+          position={[-0.48, tapY + 0.06, 0.246]}
+          rotation={[0, 0, Math.PI * 0.25]}
+          scale={station6 ? station6.linkUiScale : 1}
+          name="phone-link-icon"
         >
-          <meshStandardMaterial
-            color={STUDIO_COLORS.electricBlue}
-            emissive="#0B3DFF"
-            emissiveIntensity={0.42 + 0.25 * station1.tapImpactGlow}
-            roughness={0.28}
-            metalness={0.08}
-          />
-        </mesh>
-        <mesh
-          geometry={geometries.linkLoopGeo}
-          position={[0.125, 0, 0.012]}
-          castShadow
-        >
-          <meshStandardMaterial
-            color={STUDIO_COLORS.electricBlue}
-            emissive="#0B3DFF"
-            emissiveIntensity={0.42 + 0.25 * station1.tapImpactGlow}
-            roughness={0.28}
-            metalness={0.08}
-          />
-        </mesh>
-        {/* Connecting center bridge bar between the two links */}
-        <mesh position={[0, 0, 0.016]} rotation={[0, 0, Math.PI / 2]}>
-          <capsuleGeometry args={[0.028, 0.11, 8, 12]} />
-          <meshStandardMaterial
-            color={STUDIO_COLORS.electricBlue}
-            emissive="#0B3DFF"
-            emissiveIntensity={0.42 + 0.25 * station1.tapImpactGlow}
-            roughness={0.28}
-            metalness={0.08}
-          />
-        </mesh>
-      </group>
-
-      {/* 9. Glowing Blue Horizontal Tap Pill */}
-      <group position={[tapX - 0.27, tapY, tapZ + pillPressZ]} name="phone-tap-pill">
-        <mesh geometry={geometries.tapPillGeo} castShadow>
-          <meshStandardMaterial
-            color={STUDIO_COLORS.electricBlue}
-            emissive="#1A5BFF"
-            emissiveIntensity={pillEmissiveIntensity}
-            roughness={0.26}
-            metalness={0.08}
-          />
-        </mesh>
-
-        {/* Subtle luminous outer halo around the pill on tap / launch */}
-        {(station1.tapImpactGlow > 0.02 || station1.packetLaunchCharge > 0.02) && (
-          <mesh scale={[1.07, 1.32, 1.25]}>
-            <primitive object={geometries.tapPillGeo} attach="geometry" />
+          <mesh
+            geometry={geometries.linkLoopGeo}
+            position={[-0.125, 0, 0]}
+            castShadow
+          >
             <meshStandardMaterial
-              color={STUDIO_COLORS.electricBlueGlow}
-              emissive={STUDIO_COLORS.electricBlueGlow}
-              emissiveIntensity={0.65}
-              transparent
-              opacity={
-                0.24 * Math.max(station1.tapImpactGlow, station1.packetLaunchCharge)
-              }
-              depthWrite={false}
+              color={STUDIO_COLORS.electricBlue}
+              emissive="#0B3DFF"
+              emissiveIntensity={0.42 + 0.25 * station1.tapImpactGlow}
+              roughness={0.28}
+              metalness={0.08}
             />
           </mesh>
-        )}
-      </group>
+          <mesh
+            geometry={geometries.linkLoopGeo}
+            position={[0.125, 0, 0.012]}
+            castShadow
+          >
+            <meshStandardMaterial
+              color={STUDIO_COLORS.electricBlue}
+              emissive="#0B3DFF"
+              emissiveIntensity={0.42 + 0.25 * station1.tapImpactGlow}
+              roughness={0.28}
+              metalness={0.08}
+            />
+          </mesh>
+          {/* Connecting center bridge bar between the two links */}
+          <mesh position={[0, 0, 0.016]} rotation={[0, 0, Math.PI / 2]}>
+            <capsuleGeometry args={[0.028, 0.11, 8, 12]} />
+            <meshStandardMaterial
+              color={STUDIO_COLORS.electricBlue}
+              emissive="#0B3DFF"
+              emissiveIntensity={0.42 + 0.25 * station1.tapImpactGlow}
+              roughness={0.28}
+              metalness={0.08}
+            />
+          </mesh>
+        </group>
+      )}
+
+      {/* 9. Glowing Blue Horizontal Tap Pill (dismissed cleanly in Station 6) */}
+      {(station6 ? station6.linkUiScale : 1) > 0.01 && (
+        <group
+          position={[tapX - 0.27, tapY, tapZ + pillPressZ]}
+          scale={station6 ? station6.linkUiScale : 1}
+          name="phone-tap-pill"
+        >
+          <mesh geometry={geometries.tapPillGeo} castShadow>
+            <meshStandardMaterial
+              color={STUDIO_COLORS.electricBlue}
+              emissive="#1A5BFF"
+              emissiveIntensity={pillEmissiveIntensity}
+              roughness={0.26}
+              metalness={0.08}
+            />
+          </mesh>
+
+          {/* Subtle luminous outer halo around the pill on tap / launch */}
+          {(station1.tapImpactGlow > 0.02 || station1.packetLaunchCharge > 0.02) && (
+            <mesh scale={[1.07, 1.32, 1.25]}>
+              <primitive object={geometries.tapPillGeo} attach="geometry" />
+              <meshStandardMaterial
+                color={STUDIO_COLORS.electricBlueGlow}
+                emissive={STUDIO_COLORS.electricBlueGlow}
+                emissiveIntensity={0.65}
+                transparent
+                opacity={
+                  0.24 * Math.max(station1.tapImpactGlow, station1.packetLaunchCharge)
+                }
+                depthWrite={false}
+              />
+            </mesh>
+          )}
+        </group>
+      )}
 
       {/* 10. Expanding Concentric Blue Ripple Rings & Tap Bloom */}
       <group position={[tapX, tapY, tapZ + 0.02]} name="tap-ripple-rings">
@@ -530,6 +546,41 @@ export const SmartphoneModel: React.FC<SmartphoneModelProps> = ({station1}) => {
               />
             </mesh>
           )}
+        {/* Station 6: Emerald 200 OK Arrival Shockwave Rings */}
+        {station6 && station6.arrivalGlow > 0.02 && (
+          <mesh position={[0, 0, 0.018]} renderOrder={8}>
+            <circleGeometry args={[0.24 + 0.22 * station6.arrivalGlow, 32]} />
+            <meshBasicMaterial
+              color={STUDIO_COLORS.responseEmeraldGlow}
+              transparent
+              opacity={0.34 * station6.arrivalGlow}
+              depthWrite={false}
+            />
+          </mesh>
+        )}
+        {station6?.arrivalShockwaves.map((ring) => {
+          if (!ring.active) return null;
+          return (
+            <mesh
+              key={`s6-wave-${ring.index}`}
+              position={[0, 0, 0.026 + ring.index * 0.006]}
+              renderOrder={11 + ring.index}
+            >
+              <torusGeometry
+                args={[ring.radius, 0.024 - ring.index * 0.004, 12, 48]}
+              />
+              <meshStandardMaterial
+                color={STUDIO_COLORS.responseEmeraldGlow}
+                emissive={STUDIO_COLORS.responseEmerald}
+                emissiveIntensity={0.9}
+                transparent
+                opacity={ring.opacity}
+                roughness={0.2}
+                depthWrite={false}
+              />
+            </mesh>
+          );
+        })}
       </group>
 
       {/* 11. Soft Grounding Floating Shadow beneath Smartphone */}
